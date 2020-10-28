@@ -1,0 +1,17 @@
+<div class="center">
+    <form action="/search" method="GET">
+        <input name="searchQuery" type="text" placeholder="type your query here">
+        <br>
+        <br>
+        <label for="limit">Limit</label>
+        <input name="limit" type="number" min="1" max="25" value="8">
+        <label for="rating">Rating</label>
+        <select name="rating" id="">
+            <option value="g">g</option>
+            <option value="pg">pg</option>
+            <option value="pg-13">pg-13</option>
+            <option value="r">r</option>
+        </select>
+        <button type="submit">SUBMIT</button>
+    </form>
+</div>
