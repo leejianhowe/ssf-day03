@@ -1,7 +1,8 @@
 .center {
-  text-align: center;
+	text-align: center;
 }
+
 .spacing {
-  display: block;
-  margin: 10px auto auto 5px;
+	display: block;
+	margin: 10px auto auto 5px;
 }

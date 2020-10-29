@@ -1,18 +1,21 @@
 // import modules
 const express = require('express')
-const hbs = require('express-handlebars')
+const hbs = require("express-handlebars")
 const fetch = require('node-fetch')
 const withQuery = require('with-query').default
 
+
+
 // config env
 const PORT = parseInt(process.argv[2]) || parseInt(process.env.PORT) || 3000
-const API_KEY =  process.env.API_KEY || ""
+const API_KEY = process.env.API_KEY || ""
 const endpoint = 'https://api.giphy.com/v1/gifs/search'
 
 // create instance of app
 const app = express()
 
 app.use(express.static('public'))
+
 
 /* const giphyObj = {
     "data":
@@ -494,24 +497,26 @@ for (i = 0; i <length; i++)
 //     return test1[key].fixed_height.url
 // })
 
-const giphyObj1 ={
-	firstname:'john',
-	lastname: 'lee'
+const giphyObj1 = {
+    firstname: 'john',
+    lastname: 'lee'
 }
 
-Object.getOwnPropertyNames(giphyObj1)//returns ['firstname','lastname']
+Object.getOwnPropertyNames(giphyObj1) //returns ['firstname','lastname']
 
-Object.keys(giphyObj1)//returns ['firstname','lastname']
+Object.keys(giphyObj1) //returns ['firstname','lastname']
 
 const write = Object.getOwnPropertyNames(giphyObj1)
 
 const write2 = Object.keys(giphyObj1)
 
-console.log('getownpropertynames: '+write)
-console.log('keys: '+write2)
+console.log('getownpropertynames: ' + write)
+console.log('keys: ' + write2)
 
 // set view engine
-app.engine('hbs',hbs({defaultLayout: 'main.hbs'}))
+app.engine('hbs', hbs({
+    defaultLayout: 'main.hbs'
+}))
 app.set('view engine', 'hbs')
 
 // Parse URL-encoded bodies (as sent by HTML forms)
@@ -521,47 +526,67 @@ app.set('view engine', 'hbs')
 // app.use(express.json());
 
 // configure app
-app.get('/', (req,res)=>{
+app.get('/', (req, res) => {
     res.status(200).type('html')
     res.render('search')
 })
 
-app.get('/search',async (req,res)=>{
-    
+app.get('/search', async (req, res) => {
+
     const searchQuery = req.query.searchQuery
     const limit = req.query.limit
     const rating = req.query.rating
 
     // construct url with query params
-    const url = withQuery(endpoint,{
+    const url = withQuery(endpoint, {
         q: searchQuery,
         api_key: API_KEY,
         limit: limit,
         lang: 'en',
         rating: rating,
     })
-    
+
     // .then() resolve
     const result = await fetch(url)
-    
+
     // .then() resolve
     const data = await result.json()
-    
+
     // results of json object
     // first level is data, array => map function
     // 2nd level is images, object => property is images
     // 3rd level is fixed_height, object
     // 4th level is url, object
-    const finalResult = data.data.map(element=>{
-        return element.images.fixed_height.url
+
+    // lecture code
+    /*     const imgs = []
+    
+        for (let i of data.data) {
+            const title = i.title
+            const url = i.images.fixed_height.url
+            imgs.push({ title, url })
+        } */
+
+
+    // map function
+    const imgs = data.data.map(element => {
+        return {
+            title: element.title,
+            url: element.images.fixed_height.url,
+        }
     })
 
     res.status(200).type('html')
-    res.render('result',{finalResult:finalResult})
+    res.render('result', {
+        imgs, searchQuery,
+        hasContent: imgs.length > 0
+        // ! turns img.length into a boolean
+        // hasContent: !!imgs.length
+    })
 })
 
 // all other uncaptured resources
-app.use((req,res)=>{
+app.use((req, res) => {
     res.redirect('/')
 })
 
@@ -569,6 +594,6 @@ app.use((req,res)=>{
 // does not check if api key is correct
 if (API_KEY)
     app.listen(PORT, console.info(`APP started on ${PORT} on ${new Date()} on http://localhost:${PORT}`))
-else{
+else {
     console.info('API KEY NOT IN ENV')
 }

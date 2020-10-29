@@ -1,6 +1,13 @@
-{{#each finalResult}}
+<h2 class="center">Search result of {{searchQuery}}</h2>
+
+{{#if hasContent}}
+
+{{#each imgs}}
 <div class="center">
-    <p style="font-size: 0.8rem;">{{this}}</p>
-    <img src="{{this}}.gif" alt="">
+    <p style="font-size: 0.8rem;">{{this.title}}</p>
+    <img src="{{this.url}}.gif" alt="">
 </div>
 {{/each}}
+{{else}}
+    <h2 class="center">No results avaliable</h2>
+{{/if}}
